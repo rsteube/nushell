@@ -49,10 +49,10 @@ impl NuCompleter {
                 "gh" => "gh _carapace",
                 _ => &carapace,
             };
-
+    
             let output = Command::new("sh")
                 .arg("-c")
-                .arg(format!("{} nushell _ {}''", prefix, line))
+                .arg(format!("{} nushell _ {}''", prefix, &line[..pos]))
                 .output()
                 .expect("failed to execute process");
             let output_str = from_utf8(&output.stdout).expect("ignore error");
