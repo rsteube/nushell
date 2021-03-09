@@ -62,9 +62,15 @@ impl NuCompleter {
 
             let suggestions = a
                 .into_iter()
-                .map(|entry| Suggestion {
-                        replacement: entry["Value"].as_str().expect("ignore error").to_string(),
+                .map(|entry| {
+                    let mut r = entry["Value"].as_str().expect("ignore error").to_string();
+                    if r.contains(" ") {
+                        r = format!("'{}'", r);
+                    }
+                    Suggestion {
+                        replacement: r,
                         display: entry["Display"].as_str().expect("ignore error").to_string(),
+                    }
                 })
                 .collect();
 
