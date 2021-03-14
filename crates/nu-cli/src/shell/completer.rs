@@ -49,6 +49,54 @@ impl NuCompleter {
                 "gh" => "gh _carapace",
                 _ => &carapace,
             };
+
+            let output = Command::new("sh")
+                .arg("-c")
+                .arg(format!("{} nushell _ {}''", prefix, line))
+                .output()
+                .expect("failed to execute process");
+            let output_str = from_utf8(&output.stdout).expect("ignore error");
+            let empty = serde_json::from_str("[]").expect("ignore error");
+            let v: Value = serde_json::from_str(output_str).unwrap_or(empty);
+            let a = v.as_array().expect("ignore error");
+
+            let suggestions = a
+                .into_iter()
+                .map(|entry| Suggestion {
+                        replacement: entry["Value"].as_str().expect("ignore error").to_string(),
+                        display: entry["Display"].as_str().expect("ignore error").to_string(),
+                })
+                .collect();
+
+            let pos = locations[0].span.start();
+            (pos, suggestions)
+        }
+    }
+
+    fn completeCarapace(
+        &self,
+        line: &str,
+        pos: usize,
+        context: &completion::CompletionContext,
+    ) -> (usize, Vec<Suggestion>) {
+        let nu_context: &EvaluationContext = context.as_ref();
+
+        nu_context.scope.enter_scope();
+        let (block, _) = nu_parser::parse(line, 0, &nu_context.scope);
+        nu_context.scope.exit_scope();
+
+        let locations = completion::engine::completion_location(line, &block, pos);
+
+        if locations.is_empty() {
+            (pos, Vec::new())
+        } else {
+            let cmd = line.split_whitespace().next().expect("ignore error");
+            let carapace = format!("carapace {}", cmd);
+            let prefix = match cmd {
+                "example" => "example _carapace",
+                "gh" => "gh _carapace",
+                _ => &carapace,
+            };
     
             let output = Command::new("sh")
                 .arg("-c")
@@ -76,7 +124,6 @@ impl NuCompleter {
 
             let pos = locations[0].span.start();
             (pos, suggestions)
-        }
     }
 }
 
