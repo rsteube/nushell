@@ -1,11 +1,11 @@
-use crate::completion::path::{PathSuggestion};
+use crate::completion::path::PathSuggestion;
 use crate::completion::{self, Suggestion};
 use nu_engine::EvaluationContext;
 use nu_parser::ParserScope;
 use nu_source::Tag;
 use std::process::Command;
 //use std::io::{self, Write};
-use serde_json::{Value};
+use serde_json::Value;
 use std::str::from_utf8;
 
 use std::borrow::Cow;
@@ -63,8 +63,8 @@ impl NuCompleter {
             let suggestions = a
                 .into_iter()
                 .map(|entry| Suggestion {
-                        replacement: entry["Value"].as_str().expect("ignore error").to_string(),
-                        display: entry["Display"].as_str().expect("ignore error").to_string(),
+                    replacement: entry["Value"].as_str().expect("ignore error").to_string(),
+                    display: entry["Display"].as_str().expect("ignore error").to_string(),
                 })
                 .collect();
 
@@ -97,7 +97,6 @@ impl NuCompleter {
                 "gh" => "gh _carapace",
                 _ => &carapace,
             };
-    
             let output = Command::new("sh")
                 .arg("-c")
                 .arg(format!("{} nushell _ {}''", prefix, &line[..pos]))
@@ -124,6 +123,7 @@ impl NuCompleter {
 
             let pos = locations[0].span.start();
             (pos, suggestions)
+        }
     }
 }
 
