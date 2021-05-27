@@ -46,7 +46,6 @@ impl NuCompleter {
             let carapace = format!("carapace {}", cmd);
             let prefix = match cmd {
                 "example" => "example _carapace",
-                "gh" => "gh _carapace",
                 _ => &carapace,
             };
 
