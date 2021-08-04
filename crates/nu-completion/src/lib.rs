@@ -1,3 +1,4 @@
+pub(crate) mod carapace;
 pub(crate) mod command;
 pub(crate) mod completer;
 pub(crate) mod engine;

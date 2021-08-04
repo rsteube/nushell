@@ -3350,6 +3350,7 @@ dependencies = [
  "nu-source",
  "nu-test-support",
  "parking_lot",
+ "serde_json",
 ]
 
 [[package]]
