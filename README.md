@@ -4,3 +4,7 @@ Fork with experimental support for [carapace](https://github.com/rsteube/carapac
 Nushell currently has no way to register a custom completer so this is hacked in directly to do some basic testing.
 
 [![asciicast](https://asciinema.org/a/397171.svg)](https://asciinema.org/a/397171)
+
+## Getting Started
+
+Just add the example from [carapace](https://github.com/rsteube/carapace) or [carapace-bin](https://github.com/rsteube/carapace-bin) to PATH
