@@ -37,6 +37,7 @@ where
                 .map(|entry| {
                     let r = entry["Value"].as_str().expect("ignore error").to_string();
                     if r.contains(" ") {
+                        //// TODO quote within carapace so that space suffix works
                         //r = format!("'{}'", r);
                     }
                     Suggestion {

@@ -82,6 +82,7 @@ impl NuCompleter {
                         }
 
                         _ => {
+                            // TODO filter locations to just complete the relevant one
                             if location.span.start() <= cursor_pos
                                 && location.span.end() >= cursor_pos
                             {
@@ -89,7 +90,9 @@ impl NuCompleter {
                                     words: words.clone(),
                                 };
                                 carapace_completer.complete(context, &partial, matcher.to_owned())
-                            // TODO fallback
+                            // TODO fallback to default flag/argument completion (readd code) if no
+                            // know command - or rather configure which commands to complete with
+                            // carapace
                             } else {
                                 Vec::new()
                             }
