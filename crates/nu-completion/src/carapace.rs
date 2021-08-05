@@ -16,13 +16,18 @@ where
         if self.words.len() == 0 {
             Vec::new()
         } else {
-            let cmd = self.words[0];
-            let carapace = format!("carapace {}", cmd);
-            let prefix = match cmd {
-                "example" => "example _carapace",
-                _ => &carapace,
+            let cmd = match self.words[0] {
+                "example" => "example",
+                _ => "carapace",
             };
-            let output = Command::new(prefix)
+        
+            let subcmd = match self.words[0] {
+                "example" => "_carapace",
+                _ => self.words[0],
+            };
+ 
+            let output = Command::new(cmd)
+                .arg(subcmd)
                 .arg("nushell")
                 .arg("_")
                 .args(self.words.clone())

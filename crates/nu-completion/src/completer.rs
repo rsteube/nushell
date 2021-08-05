@@ -58,14 +58,24 @@ impl NuCompleter {
         } else {
             let mut pos = locations[0].span.start();
             let mut words = Vec::new();
+
+            
+            for token in nu_parser::lex(line, 0, NewlineMode::Normal).0 {
+                if token.span.start() <= cursor_pos && token.span.end() >= cursor_pos {
+                    words.push(&line[token.span.start()..token.span.end()]);
+                    break;
+                } else if token.span.end() < cursor_pos {
+                    words.push(token.span.slice(line));
+                }
+            }
+
             for location in &locations {
                 if location.span.start() <= cursor_pos && location.span.end() >= cursor_pos {
-                    words.push(&line[location.span.start()..location.span.end()]);
                     pos = location.span.start();
-                    break;
+                    // break; TODO arrr???
                 }
-                words.push(location.span.slice(line));
             }
+
             let suggestions = locations
                 .into_iter()
                 .flat_map(|location| {
@@ -86,6 +96,10 @@ impl NuCompleter {
                             if location.span.start() <= cursor_pos
                                 && location.span.end() >= cursor_pos
                             {
+                                if partial.len() == 0 {
+                                    words.push("") // TODO current word being completed is empty
+                                }
+
                                 let carapace_completer = CarapaceCompleter {
                                     words: words.clone(),
                                 };
