@@ -57,22 +57,31 @@ impl NuCompleter {
             (pos, Vec::new())
         } else {
             let mut pos = locations[0].span.start();
-            let mut words = Vec::new();
+            let mut blockStart = 0;
+            for location in &locations {
+                if location.span.start() <= cursor_pos && location.span.end() >= cursor_pos {
+                    pos = location.span.start();
+                }
+                if location.span.start() <= cursor_pos {
+                    match location.item {
+                        LocationType::Command => blockStart = location.span.start(),
+                        _ => {}
+                    }
+                }
+            }
 
-            
+            let mut words = Vec::new();
             for token in nu_parser::lex(line, 0, NewlineMode::Normal).0 {
+                if token.span.start() < blockStart {
+                    // ensure within current block
+                    continue;
+                }
+
                 if token.span.start() <= cursor_pos && token.span.end() >= cursor_pos {
                     words.push(&line[token.span.start()..token.span.end()]);
                     break;
                 } else if token.span.end() < cursor_pos {
                     words.push(token.span.slice(line));
-                }
-            }
-
-            for location in &locations {
-                if location.span.start() <= cursor_pos && location.span.end() >= cursor_pos {
-                    pos = location.span.start();
-                    // break; TODO arrr???
                 }
             }
 

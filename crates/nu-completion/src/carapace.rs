@@ -20,12 +20,12 @@ where
                 "example" => "example",
                 _ => "carapace",
             };
-        
+
             let subcmd = match self.words[0] {
                 "example" => "_carapace",
                 _ => self.words[0],
             };
- 
+
             let output = Command::new(cmd)
                 .arg(subcmd)
                 .arg("nushell")
