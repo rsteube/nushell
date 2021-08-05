@@ -57,10 +57,14 @@ impl NuCompleter {
             (pos, Vec::new())
         } else {
             let mut pos = locations[0].span.start();
+            let mut words = Vec::new();
             for location in &locations {
                 if location.span.start() <= cursor_pos && location.span.end() >= cursor_pos {
+                    words.push(&line[location.span.start()..location.span.end()]);
                     pos = location.span.start();
+                    break;
                 }
+                words.push(location.span.slice(line));
             }
             let suggestions = locations
                 .into_iter()
@@ -82,8 +86,7 @@ impl NuCompleter {
                                 && location.span.end() >= cursor_pos
                             {
                                 let carapace_completer = CarapaceCompleter {
-                                    line: line.to_owned(),
-                                    pos: cursor_pos,
+                                    words: words.clone(),
                                 };
                                 carapace_completer.complete(context, &partial, matcher.to_owned())
                             // TODO fallback
